@@ -42,7 +42,7 @@ namespace VRUIInput
 
             var controllerTransform = vrInputModule.controllers[controllerId].transform;
 
-            vrInputModule.UpdateDistance(controllerId);
+            vrInputModule.UpdateRaycast(controllerId);
             float distance = vrInputModule.GetDistance(controllerId);
 
             if (showForCanvasOnly)

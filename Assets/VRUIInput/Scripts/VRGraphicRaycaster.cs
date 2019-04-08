@@ -10,12 +10,12 @@ namespace VRUIInput
     [RequireComponent(typeof(Canvas))]
     public class VRGraphicRaycaster : GraphicRaycaster
     {
-
         private Canvas m_canvas;
         private Canvas canvas { get { if (m_canvas == null) m_canvas = GetComponent<Canvas>(); return m_canvas; } }
 
-        // Should work fine for all VR use cases
-        public override Camera eventCamera { get { return Camera.main; } }
+        public override Camera eventCamera => canvas.worldCamera;
+
+        public LayerMask blockingMask { get { return m_BlockingMask; } set { m_BlockingMask = value; } }
 
 #if UNITY_EDITOR
         override protected void Reset()
@@ -29,7 +29,12 @@ namespace VRUIInput
         [NonSerialized] private List<Graphic> m_RaycastResults = new List<Graphic>();
         public override void Raycast(PointerEventData eventData, List<RaycastResult> resultAppendList)
         {
-            if (eventCamera == null || canvas.renderMode != RenderMode.WorldSpace) return;
+            if (canvas.renderMode != RenderMode.WorldSpace) return;
+            if (eventCamera == null)
+            {
+                Debug.LogWarning("Please add VR camera to <b>Event Camera</b> field in your canvas.");
+                return;
+            }
 
             var vrData = eventData as VRPointerEventData;
             if (vrData == null) return;

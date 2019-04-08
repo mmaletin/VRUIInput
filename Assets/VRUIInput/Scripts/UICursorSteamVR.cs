@@ -1,7 +1,9 @@
 ﻿
+using Valve.VR;
+
 namespace VRUIInput
 {
-    public class ViveUICursor : VRUICursor<SteamVR_TrackedObject>
+    public class UICursorSteamVR : VRUICursor<SteamVR_Behaviour_Pose>
     {
         private void Awake()
         {
@@ -18,10 +20,11 @@ namespace VRUIInput
             var controller = vrInputModule.controllers[controllerId];
 
             bool touchpadPressed = false;
-            int openVRId = (int)controller.index;
+            int openVRId = controller.GetDeviceIndex();
             if (openVRId != -1)
             {
-                touchpadPressed = SteamVR_Controller.Input(openVRId).GetPress(Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad);
+                var action = SteamVR_Actions.default_Teleport[controller.inputSource];
+                touchpadPressed = action.state;
             }
 
             return touchpadPressed;

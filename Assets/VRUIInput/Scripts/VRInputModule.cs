@@ -22,18 +22,21 @@ namespace VRUIInput
         }
 
         public T[] controllers;
-        private float[] distances;
+        protected float[] distances;
+        protected GameObject[] gameObjects;
 
         protected override void Start()
         {
             base.Start();
 
             distances = new float[controllers.Length];
+            gameObjects = new GameObject[controllers.Length];
         }
 
         public float GetDistance(int id) { return distances[id]; }
+        public GameObject GetGameObject(int id) { return gameObjects[id]; }
 
-        public void UpdateDistance(int id)
+        public void UpdateRaycast(int id)
         {
             var controllerTransform = controllers[id].transform;
             distanceAnalisysEventData.ray = new Ray(controllerTransform.position, controllerTransform.forward);
@@ -42,6 +45,7 @@ namespace VRUIInput
             var raycast = FindFirstRaycast(m_RaycastResultCache);
 
             distances[id] = m_RaycastResultCache.Count == 0 ? float.PositiveInfinity : raycast.distance;
+            gameObjects[id] = raycast.gameObject;
 
             m_RaycastResultCache.Clear();
         }
@@ -65,6 +69,7 @@ namespace VRUIInput
                 var pointer = GetVRPointerEventData(i, out pressed, out released);
 
                 distances[i] = pointer.pointerCurrentRaycast.distance;
+                gameObjects[i] = pointer.pointerCurrentRaycast.gameObject;
 
                 ProcessTouchPress(pointer, pressed, released);
 
