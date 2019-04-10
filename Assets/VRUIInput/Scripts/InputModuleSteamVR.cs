@@ -7,6 +7,8 @@ namespace VRUIInput
 
     public class InputModuleSteamVR : VRInputModule<SteamVR_Behaviour_Pose>
     {
+        public SteamVR_Action_Boolean interactUIAction = SteamVR_Input.GetAction<SteamVR_Action_Boolean>("default", "InteractUI");
+
 #if UNITY_EDITOR
         protected override void Reset()
         {
@@ -45,7 +47,7 @@ namespace VRUIInput
                 return false;
             }
 
-            var action = SteamVR_Actions.default_InteractUI[controller.inputSource];
+            var action = interactUIAction[controller.inputSource];
 
             pressed = action.stateDown;
             released = action.stateUp;

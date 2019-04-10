@@ -5,8 +5,14 @@ namespace VRUIInput
 {
     public class UICursorSteamVR : VRUICursor<SteamVR_Behaviour_Pose>
     {
+        private SteamVR_Behaviour_Pose controller;
+
+        public SteamVR_Action_Boolean teleportAction = SteamVR_Input.GetAction<SteamVR_Action_Boolean>("default", "Teleport");
+
         private void Awake()
         {
+            controller = vrInputModule.controllers[controllerId];            
+
             SteamVR_Events.NewPosesApplied.Listen(OnNewPosesApplied);
         }
 
@@ -17,17 +23,12 @@ namespace VRUIInput
 
         override protected bool GetTeleportationButtonPressed()
         {
-            var controller = vrInputModule.controllers[controllerId];
-
-            bool touchpadPressed = false;
-            int openVRId = controller.GetDeviceIndex();
-            if (openVRId != -1)
+            if (teleportAction != null && controller.GetDeviceIndex() != -1)
             {
-                var action = SteamVR_Actions.default_Teleport[controller.inputSource];
-                touchpadPressed = action.state;
+                return teleportAction[controller.inputSource].state;
             }
 
-            return touchpadPressed;
+            return false;
         }
     }
 }
